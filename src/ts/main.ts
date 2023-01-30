@@ -1,12 +1,15 @@
 import { addTodo, changeTodo, removeAllTodos } from "./functions";
 import { Todo } from "./models/Todo";
 
+// Creates a variable called todos that parses the json data to local storage, if no data it creates and empty array.
 let todos: Todo[] = JSON.parse(localStorage.getItem("todos") || "[]");
 
+// Clears todos from localstorage with the click of a button
 document.getElementById("clearTodos")?.addEventListener("click", () => {
   clearTodos(todos);
 });
 
+// Takes the text from input and creates a new Todo with the value.
 (document.getElementById("newTodoForm") as HTMLFormElement)?.addEventListener(
   "submit",
   (e: SubmitEvent) => {
@@ -15,23 +18,27 @@ document.getElementById("clearTodos")?.addEventListener("click", () => {
     let todoText: string = (
       document.getElementById("newTodoText") as HTMLInputElement
     ).value;
-    console.log("Todos when creating", todos);
-
+    // Creates todo with data from todoText and puts it into todos []
     createNewTodo(todoText, todos);
   }
 );
-
-function createNewTodo(todoText: string, todos: Todo[]) {
+// Creates todo and if failed it throws an
+export function createNewTodo(todoText: string, todos: Todo[]) {
   let result = addTodo(todoText, todos);
 
   if (result.success) {
-    createHtml(todos);
+    exports.createHtml(todos);
   } else {
     displayError(result.error, true);
   }
 }
 
-function createHtml(todos: Todo[]) {
+// Stores current state in localStorage -> Selects <ul> with id "todos" -> Gives it the variable todosContainer -> sets inner html to an empty string
+// and clears it of all it's children -> Loops throught the array and for each todo -> checks if todos are done and gives it a class ->
+// adds event listener when clicking a list item that makes the todo done | not done -> Writes out the list element
+
+// TLDR  The function creates an HTML list of todo items based on the provided "todos" array, and updates the local storage.
+export function createHtml(todos: Todo[]) {
   localStorage.setItem("todos", JSON.stringify(todos));
 
   let todosContainer: HTMLUListElement = document.getElementById(
@@ -57,12 +64,14 @@ function createHtml(todos: Todo[]) {
   }
 }
 
-function toggleTodo(todo: Todo) {
+// Changes todo status Done | Not Done -> updates the list with new value
+export function toggleTodo(todo: Todo) {
   changeTodo(todo);
-  createHtml(todos);
+  exports.createHtml(todos);
 }
 
-function displayError(error: string, show: boolean) {
+// If less than 3 symbols are used in input -> shows an error div -> If 3+ are used it hides the error div in the DOM
+export function displayError(error: string, show: boolean) {
   let errorContainer: HTMLDivElement = document.getElementById(
     "error"
   ) as HTMLDivElement;
@@ -76,9 +85,11 @@ function displayError(error: string, show: boolean) {
   }
 }
 
-function clearTodos(todos: Todo[]) {
+// Clears the todo array/list of all todo tasks.
+export function clearTodos(todos: Todo[]) {
   removeAllTodos(todos);
-  createHtml(todos);
+  exports.createHtml(todos);
 }
 
-createHtml(todos);
+// kommentera bort när jag ska göra test!!!
+// createHtml(todos);
